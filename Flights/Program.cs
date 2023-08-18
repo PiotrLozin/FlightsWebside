@@ -12,11 +12,18 @@ builder.Services.AddSwaggerGen( c =>
         Description = "Development Server",
         Url = "https://localhost:7031"
     });
+
+    c.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"] + e.ActionDescriptor.RouteValues["controller"]}");
 });
 
 var app = builder.Build();
 
-app.UseCors(builder => builder.WithOrigins("*"));
+app.UseCors(builder => builder
+    .WithOrigins("*")
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    );
+
 app.UseSwagger().UseSwaggerUI();
 
 // Configure the HTTP request pipeline.

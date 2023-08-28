@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Flights.Dtos;
 using Flights.ReadModels;
+using Flights.Domain.Entities;
+using Flights.Data;
 
 namespace Flights.Controllers
 {
@@ -9,16 +11,26 @@ namespace Flights.Controllers
     [ApiController]
     public class PassengerController : ControllerBase
     {
-        static private IList<NewPassengerDto> Passengers = new List<NewPassengerDto>();
+        private readonly Entities _entities;
 
+        public PassengerController(Entities entities) 
+        {
+            _entities = entities;
+        }
+        
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         public IActionResult Register(NewPassengerDto dto) 
         {
-            Passengers.Add(dto);
-            System.Diagnostics.Debug.WriteLine(Passengers.Count);
+            _entities.Passengers.Add(new Passenger(
+                dto.Email,
+                dto.FirstName,
+                dto.LastName,
+                dto.Gender
+                ));
+            System.Diagnostics.Debug.WriteLine(_entities.Passengers.Count);
             return CreatedAtAction(nameof(Find), new { email = dto.Email });
         }
 
@@ -29,7 +41,7 @@ namespace Flights.Controllers
         [ProducesResponseType(typeof(PassengerRm), 200)]
         public ActionResult<PassengerRm> Find(string email) 
         {
-            var passenger = Passengers.FirstOrDefault(p => p.Email == email);
+            var passenger = _entities.Passengers.FirstOrDefault(p => p.Email == email);
             
             if (passenger == null)
             {

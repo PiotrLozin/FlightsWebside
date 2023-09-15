@@ -87,6 +87,9 @@ namespace Flights.Controllers
             {
                 return Conflict(new { message = "overbook error" });
             }
+
+            _entities.SaveChanges();
+
             return CreatedAtAction(nameof(Find), new { id = dto.FlightId });
         }
     }

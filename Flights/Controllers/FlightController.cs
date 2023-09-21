@@ -5,6 +5,7 @@ using Flights.Dtos;
 using System;
 using Flights.Domain.Entities.Errors;
 using Flights.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Flights.Controllers
 {
@@ -88,7 +89,14 @@ namespace Flights.Controllers
                 return Conflict(new { message = "overbook error" });
             }
 
-            _entities.SaveChanges();
+            try
+            {
+                _entities.SaveChanges();
+            } catch(DbUpdateConcurrencyException e)
+            {
+                return Conflict(new { message = "Ops, somebody just booked this seat" });
+            }
+            
 
             return CreatedAtAction(nameof(Find), new { id = dto.FlightId });
         }

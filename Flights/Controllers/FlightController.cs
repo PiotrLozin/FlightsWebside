@@ -3,9 +3,9 @@ using Flights.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Flights.Dtos;
 using System;
-using Flights.Domain.Entities.Errors;
 using Flights.Data;
 using Microsoft.EntityFrameworkCore;
+using Flights.Domain.Errors;
 
 namespace Flights.Controllers
 {
